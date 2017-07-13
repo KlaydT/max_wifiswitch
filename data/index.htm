@@ -1,157 +1,120 @@
 ﻿<!DOCTYPE html>
 <html lang="ru">
- <head>
-  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-  <link rel="stylesheet" href="/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="/style.css">
-  <script type="text/javascript" src="/function.js"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Main Page</title>
-  <script type="text/javascript">
-   var set_real_time;
-   function handleServerResponse(){
-    clearTimeout(set_real_time);
-    var res = jsonResponse.time.split(":");
-    real_time(hours=res[0],min=res[1],sec=res[2]);
-    document.body.style.backgroundColor="rgb("+jsonResponse.rgb+")";
-   }
-   function real_time(hours,min,sec) {
-   sec=Number(sec)+1;
-    if (sec>=60){min=Number(min)+1;sec=0;}
-    if (min>=60){hours=Number(hours)+1;min=0;}
-    if (hours>=24){hours=0};
-    document.getElementById("time").innerHTML = hours+":"+min+":"+sec;
-    set_real_time = setTimeout("real_time("+hours+","+min+","+sec+");", 1000);
-   }
-   function load_time(submit){
-    server = "/Time";
-    send_request(submit,server);
-    load();
-   }
-   function time_zone(submit){
-    server = "/TimeZone?timezone="+val('timezone');
-    send_request(submit,server);
-   }
-   function set_time_zone(submit){
-    var set_date = new Date();
-    var gmtHours = -set_date.getTimezoneOffset()/60;
-    document.getElementById('timezone').value = gmtHours;
-    server = "/TimeZone?timezone="+gmtHours;
-    send_request(submit,server);
-   }
-   function set_ssid(submit){
-    server = "/ssid?ssid="+val('ssid')+"&password="+encodeURIComponent(val('password'));
-    send_request(submit,server);
-    alert("Измененя вступят в силу после перезагрузки. Пожалуйта перезагрузите устройство.");
-   }
-   function set_ssid_ap(submit){
-    server = "/ssidap?ssidAP="+val('ssidap')+"&passwordAP="+encodeURIComponent(val('passwordAp'));
-    send_request(submit,server);
-    alert("Измененя вступят в силу после перезагрузки. Пожалуйта перезагрузите устройство.");
-   }
-   function set_ssdp(submit){
-    server = "/ssdp?ssdp="+val('ssdp');
-    send_request(submit,server);
-    document.getElementById('ssdp_t').innerHTML = val('ssdp');
-   }
-      // -----------------------------------------------------------------------------------------------
-   function set_switch1_on(submit){
-    server = "/Switch1?Switch1=on";
-    document.getElementById('switch_t1').innerHTML = "on";
-    send_request(submit,server);
-   }
-   function set_switch1_off(submit){
-    server = "/Switch1?Switch1=off";
-    document.getElementById('switch_t1').innerHTML = "off";
-    send_request(submit,server);
-   }
-    function set_switch2_on(submit){
-    server = "/Switch2?Switch2=on";
-    document.getElementById('switch_t2').innerHTML = "on";
-    send_request(submit,server);
-   }
-   function set_switch2_off(submit){
-    server = "/Switch2?Switch2=off";
-    document.getElementById('switch_t2').innerHTML = "off";
-    send_request(submit,server);
-   }
-    function set_switch3_on(submit){
-    server = "/Switch3?Switch3=on";
-    document.getElementById('switch_t3').innerHTML = "on";
-    send_request(submit,server);
-   }
-   function set_switch3_off(submit){
-    server = "/Switch3?Switch3=off";
-    document.getElementById('switch_t3').innerHTML = "off";
-    send_request(submit,server);
-   }
-    function set_switch4_on(submit){
-    server = "/Switch4?Switch4=on";
-    document.getElementById('switch_t4').innerHTML = "on";
-    send_request(submit,server);
-   }
-   function set_switch4_off(submit){
-    server = "/Switch4?Switch4=off";
-    document.getElementById('switch_t4').innerHTML = "off";
-    send_request(submit,server);
-   } 
-   // ------------------------------------------------------------------------------------------------
-   function restart(submit,texts){
-    if (confirm(texts)) {
-	 server = "/restart?device=ok";
-     send_request(submit,server);
-     return true;
-    } else {
-     return false;
-    }
-   }
-  </script>
- </head>
- <body onload="load();">
-
+<head>
+    <title>WiFi Розетка</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-type">
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet" type="text/css">
+    <script src="/function.js" type="text/javascript"></script>
+    <script src="/max.js" type="text/javascript"></script>
+</head>
+<body onload="load();">
   <div class="container">
-   <div class="row" style="text-align:center;">
-   <p></p>
-    <div class="col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6">
-     <h5 class="alert-info" id="ssdp_t">{{SSDP}}</h5>
-     <hr>
-     
-     <TABLE align=center border=0>
-     <TR>
-     <TH>Состояние</TH><TH  colspan=2>Розетка 1</TH></TR>
-     <TR>
-     <TD width=20><p id="switch_t1">{{Switch1}}</p></TD>
-     <TD width=120><input class="btn btn-block btn-success" value="&nbsp;Вкл" onclick="set_switch1_on(this);"  type="submit"></TD>
-     <TD width=120><input class="btn btn-block btn-danger"  value="Вык"       onclick="set_switch1_off(this);" type="submit"></TD>
-     </TR>
-     <TR>
-     <TH>&nbsp;</TH><TH  colspan=2>Розетка 2</TH></TR>
-     <TR>
-     <TD width=20><p id="switch_t2">{{Switch2}}</p></TD>
-     <TD width=120><input class="btn btn-block btn-success" value="&nbsp;Вкл" onclick="set_switch2_on(this);"  type="submit"></TD>
-     <TD width=120><input class="btn btn-block btn-danger"  value="Вык"       onclick="set_switch2_off(this);" type="submit"></TD>
-     </TR>
-     <TR>
-     <TH>&nbsp;</TH><TH  colspan=2>Розетка 3</TH></TR>
-     <TR>
-     <TD width=20><p id="switch_t3">{{Switch3}}</p></TD>
-     <TD width=120><input class="btn btn-block btn-success" value="&nbsp;Вкл" onclick="set_switch3_on(this);"  type="submit"></TD>
-     <TD width=120><input class="btn btn-block btn-danger"  value="Вык"       onclick="set_switch3_off(this);" type="submit"></TD>
-     </TR>   
-     <TR>
-     <TH>&nbsp;</TH><TH  colspan=2>Розетка 4</TH></TR>
-     <TR>
-     <TD width=20><p id="switch_t4">{{Switch4}}</p></TD>
-     <TD width=120><input class="btn btn-block btn-success" value="&nbsp;Вкл" onclick="set_switch4_on(this);"  type="submit"></TD>
-     <TD width=120><input class="btn btn-block btn-danger"  value="Вык"       onclick="set_switch4_off(this);" type="submit"></TD>
-     </TR> 
-     </TABLE>
-     <hr>
-     <a class="btn btn-block btn-default"" href="/management.htm">Панель управления</a>
-     <input class="btn btn-block btn-danger" value="Перезагрузить устройство" onclick="restart(this,'Вы действительно хотите перезагрузить устройство?');" type="submit">
-     <a class="btn btn-block btn-warning" href="/login?DISCONNECT=YES">Logout</a>
-     </div>
-   </div>
-  </div>
- </body>
+    <div class="row" style="text-align:center;">
+      <p>
+      </p>
+      <div class="col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6">
+        <h5 class="alert-info" id="ssdp_t">
+          {{SSDP}}
+        </h5>
+        <hr>
+        <table align="center" border="0">
+          <tr>
+            <th>
+              Состояние
+            </th>
+            <th colspan="2">
+              Розетка 1
+            </th>
+          </tr>
+          <tr>
+            <td width="20">
+              <p id="switch_t1">
+                {{Switch1}}
+              </p>
+            </td>
+            <td width="120">
+              <input class="btn btn-block btn-success" onclick="set_switch1_on(this);" type="submit" value=" Вкл"/>
+            </td>
+            <td width="120">
+              <input class="btn btn-block btn-danger" onclick="set_switch1_off(this);" type="submit" value="Вык"/>
+            </td>
+          </tr>
+          <tr>
+            <th>
+            </th>
+            <th colspan="2">
+              Розетка 2
+            </th>
+          </tr>
+          <tr>
+            <td width="20">
+              <p id="switch_t2">
+                {{Switch2}}
+              </p>
+            </td>
+            <td width="120">
+              <input class="btn btn-block btn-success" onclick="set_switch2_on(this);" type="submit" value=" Вкл"/>
+            </td>
+            <td width="120">
+              <input class="btn btn-block btn-danger" onclick="set_switch2_off(this);" type="submit" value="Вык"/>
+            </td>
+          </tr>
+          <tr>
+            <th>
+            </th>
+            <th colspan="2">
+              Розетка 3
+            </th>
+          </tr>
+          <tr>
+            <td width="20">
+              <p id="switch_t3">
+                {{Switch3}}
+              </p>
+            </td>
+            <td width="120">
+              <input class="btn btn-block btn-success" onclick="set_switch3_on(this);" type="submit" value=" Вкл"/>
+            </td>
+            <td width="120">
+              <input class="btn btn-block btn-danger" onclick="set_switch3_off(this);" type="submit" value="Вык"/>
+            </td>
+          </tr>
+          <tr>
+            <th>
+            </th>
+            <th colspan="2">
+              Розетка 4
+            </th>
+          </tr>
+          <tr>
+            <td width="20">
+              <p id="switch_t4">
+                {{Switch4}}
+              </p>
+            </td>
+            <td width="120">
+              <input class="btn btn-block btn-success" onclick="set_switch4_on(this);" type="submit" value=" Вкл"/>
+            </td>
+            <td width="120">
+              <input class="btn btn-block btn-danger" onclick="set_switch4_off(this);" type="submit" value="Вык"/>
+            </td>
+          </tr>
+        </table>
+        <hr>
+        <a "="" class="btn btn-block btn-default" href="/management.htm">
+          Панель управления
+        </a>
+        <input class="btn btn-block btn-danger" onclick="restart(this,'Вы действительно хотите перезагрузить устройство?');" type="submit" value="Перезагрузить устройство">
+        <a class="btn btn-block btn-warning" href="/login?DISCONNECT=YES">
+          Logout
+        </a>
+      </input>
+    </hr>
+  </hr>
+</div>
+</div>
+</div>
+</body>
 </html>
