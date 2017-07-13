@@ -11,6 +11,7 @@ void HTTP_init(void) {
   HTTP.on("/Switch2", handle_Set_Switch2);
   HTTP.on("/Switch3", handle_Set_Switch3);
   HTTP.on("/Switch4", handle_Set_Switch4);
+  HTTP.on("/Switch", handle_Set_Switch);
   HTTP.on("/ip", handle_Set_ip);
 
   HTTP.on("/", handleRoot);
@@ -220,6 +221,34 @@ void handle_Set_Ssidap() {              //
   _ssidAP = HTTP.arg("ssidAP");         // Получаем значение ssidAP из запроса сохраняем в глобальной переменной
   _passwordAP = HTTP.arg("passwordAP"); // Получаем значение passwordAP из запроса сохраняем в глобальной переменной
   saveConfig();                         // Функция сохранения данных во Flash пока пустая
+  HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
+}
+
+//вкл/выкл розетки
+void handle_Set_Switch() {             
+  Switch = HTTP.arg("Switch");
+  swCMD = HTTP.arg("cmd");
+  switch(Switch)   {  
+    case '1':  
+        if (swCMD == "on") {  digitalWrite(D4_pin, HIGH); };
+        if (swCMD == "off"){  digitalWrite(D4_pin, LOW);  };      
+        break;  
+    case '2':  
+        if (swCMD == "on") {  digitalWrite(D3_pin, HIGH); };
+        if (swCMD == "off"){  digitalWrite(D3_pin, LOW);  };      
+        break; 
+    case '3':  
+        if (swCMD == "on") {  digitalWrite(D2_pin, HIGH); };
+        if (swCMD == "off"){  digitalWrite(D2_pin, LOW);  };      
+        break;
+    case '4':  
+        if (swCMD == "on") {  digitalWrite(D1_pin, HIGH); };
+        if (swCMD == "off"){  digitalWrite(D1_pin, LOW);  };      
+        break;     
+    default:  
+        break;    
+  }          
+  saveConfig();                         // Функция сохранения данных во Flash
   HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
 }
 
