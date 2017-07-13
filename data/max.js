@@ -60,54 +60,15 @@ function set_ssdp(submit) {
     send_request(submit, server);
     document.getElementById('ssdp_t').innerHTML = val('ssdp');
 }
+
 // -----------------------------------------------------------------------------------------------
-function set_switch1_on(submit) {
-    server = "/Switch1?Switch1=on";
-    document.getElementById('switch_t1').innerHTML = "on";
+function set_switch(submit, sw, cmd) {
+    server = "/Switch?Switch="+sw+"&cmd="+cmd;
+    document.getElementById('switch_t'+sw).innerHTML = cmd;
     send_request(submit, server);
+    return false;
 }
 
-function set_switch1_off(submit) {
-    server = "/Switch1?Switch1=off";
-    document.getElementById('switch_t1').innerHTML = "off";
-    send_request(submit, server);
-}
-
-function set_switch2_on(submit) {
-    server = "/Switch2?Switch2=on";
-    document.getElementById('switch_t2').innerHTML = "on";
-    send_request(submit, server);
-}
-
-function set_switch2_off(submit) {
-    server = "/Switch2?Switch2=off";
-    document.getElementById('switch_t2').innerHTML = "off";
-    send_request(submit, server);
-}
-
-function set_switch3_on(submit) {
-    server = "/Switch3?Switch3=on";
-    document.getElementById('switch_t3').innerHTML = "on";
-    send_request(submit, server);
-}
-
-function set_switch3_off(submit) {
-    server = "/Switch3?Switch3=off";
-    document.getElementById('switch_t3').innerHTML = "off";
-    send_request(submit, server);
-}
-
-function set_switch4_on(submit) {
-    server = "/Switch4?Switch4=on";
-    document.getElementById('switch_t4').innerHTML = "on";
-    send_request(submit, server);
-}
-
-function set_switch4_off(submit) {
-    server = "/Switch4?Switch4=off";
-    document.getElementById('switch_t4').innerHTML = "off";
-    send_request(submit, server);
-}
 // ------------------------------------------------------------------------------------------------
 function restart(submit, texts) {
     if (confirm(texts)) {
