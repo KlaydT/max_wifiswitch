@@ -36,6 +36,34 @@ int LED = 2;
 
 byte uuidNumber[16]; // UUIDs in binary form are 16 bytes long
 
+String loginHTMLpage = "";
+/*
+ String loginHTMLpage = "<!DOCTYPE html>";
+ loginHTMLpage += "<html lang='ru'>";
+ loginHTMLpage += "<head>";
+ loginHTMLpage += "<meta http-equiv='Content-type' content='text/html; charset=utf-8'>";
+ loginHTMLpage += "<link rel='stylesheet' href='/bootstrap.min.css'>";
+ loginHTMLpage += "<link rel='stylesheet' type='text/css' href='/style.css'>";
+ loginHTMLpage += "<script type='text/javascript' src='/function.js'></script>";
+ loginHTMLpage += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+ loginHTMLpage += "<title>Login Page</title>";
+ loginHTMLpage += "</head>";
+ loginHTMLpage += "<body onload=\"load();\">";
+ loginHTMLpage += "<div class=\"container\">";
+ loginHTMLpage += "<div class=\"row\" style=\"text-align:center;\">";
+ loginHTMLpage += "<p></p>";
+ loginHTMLpage += "<div class=\"col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6\">";
+ loginHTMLpage += "<h5 class=\"alert-info\" id=\"ssdp_t\">{{SSDP}}</h5><hr>";  
+ loginHTMLpage += "<form action='/login' method='POST'>Log in to use PowerSocket<br>";
+ loginHTMLpage += "<TABLE align=center>";
+ loginHTMLpage += "<TR><TD align=right>User:</TD><TD><input type='text' name='USERNAME' placeholder='user name'></TD></TR>";
+ loginHTMLpage += "<TR><TD>Password:</TD><TD><input type='password' name='PASSWORD' placeholder='password'></TD></TR>";
+ loginHTMLpage += "<TR><TD colspan=2><input type='submit' name='SUBMIT' value='Submit'></TD></TR>";
+ loginHTMLpage += "</TABLE>";
+ loginHTMLpage += "</form>" + msg + "<br>";
+ loginHTMLpage += "<hr></div></div></div></body></html>";
+*/
+
 void setup() {
   Serial.begin(115200);
   Serial.println("");

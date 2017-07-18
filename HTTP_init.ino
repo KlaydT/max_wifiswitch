@@ -1,24 +1,22 @@
 void HTTP_init(void) {
   Serial.println("Start HTTP");
-  HTTP.on("/configs.json", handle_ConfigJSON); // формирование configs.json страницы для передачи данных в web интерфейс
+  HTTP.on("/configs.json",  handle_ConfigJSON);   // формирование configs.json страницы для передачи данных в web интерфейс
   // API для устройства
-  HTTP.on("/ssdp", handle_Set_Ssdp);     // Установить имя SSDP устройства по запросу вида /ssdp?ssdp=proba
-  HTTP.on("/ssid", handle_Set_Ssid);     // Установить имя и пароль роутера по запросу вида /ssid?ssid=home2&password=12345678
-  HTTP.on("/devauth", handle_Set_devauth);
-  HTTP.on("/ssidap", handle_Set_Ssidap); // Установить имя и пароль для точки доступа по запросу вида /ssidap?ssidAP=home1&passwordAP=8765439
-  HTTP.on("/restart", handle_Restart);   // Перезагрузка модуля по запросу вида /restart?device=ok
-  HTTP.on("/Switch1", handle_Set_Switch1);
-  HTTP.on("/Switch2", handle_Set_Switch2);
-  HTTP.on("/Switch3", handle_Set_Switch3);
-  HTTP.on("/Switch4", handle_Set_Switch4);
-  HTTP.on("/ip", handle_Set_ip);
+  HTTP.on("/ssdp",          handle_Set_Ssdp);     // Установить имя SSDP устройства по запросу вида /ssdp?ssdp=proba
+  HTTP.on("/ssid",          handle_Set_Ssid);     // Установить имя и пароль роутера по запросу вида /ssid?ssid=home2&password=12345678
+  HTTP.on("/devauth",       handle_Set_devauth);
+  HTTP.on("/ssidap",        handle_Set_Ssidap);   // Установить имя и пароль для точки доступа по запросу вида /ssidap?ssidAP=home1&passwordAP=8765439
+  HTTP.on("/restart",       handle_Restart);      // Перезагрузка модуля по запросу вида /restart?device=ok
+  HTTP.on("/Switch1",       handle_Set_Switch1);
+  HTTP.on("/Switch2",       handle_Set_Switch2);
+  HTTP.on("/Switch3",       handle_Set_Switch3);
+  HTTP.on("/Switch4",       handle_Set_Switch4);
+  HTTP.on("/ip",            handle_Set_ip);
   
   HTTP.on("/login",         handleLogin);
   HTTP.on("/",              handleRoot);
   HTTP.on("/index.htm",     handleRoot);
   HTTP.on("/management.htm",handleRoot);
-  HTTP.on("/configs.json",  handleRoot);
-  
   //HTTP.on("/inline", [](){
   //  HTTP.send(200, "text/plain", "this works without need of authentification");
   //});
@@ -48,8 +46,7 @@ void handleLogin(){
     HTTP.send(301);
     return;
   }  
-
-
+  
   if (WiFi.status() != WL_CONNECTED) { // В режиме точки доступа логин/пароль будет всегда admin/admin
       if (HTTP.hasArg("USERNAME") && HTTP.hasArg("PASSWORD")){      
       if (HTTP.arg("USERNAME") == "admin" &&  HTTP.arg("PASSWORD") == "admin" ){
@@ -80,32 +77,33 @@ void handleLogin(){
    }    
   }
 
- String content = "<!DOCTYPE html>";
- content += "<html lang='ru'>";
- content += "<head>";
- content += "<meta http-equiv='Content-type' content='text/html; charset=utf-8'>";
- content += "<link rel='stylesheet' href='/bootstrap.min.css'>";
- content += "<link rel='stylesheet' type='text/css' href='/style.css'>";
- content += "<script type='text/javascript' src='/function.js'></script>";
- content += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
- content += "<title>Login Page</title>";
- content += "</head>";
- content += "<body onload=\"load();\">";
- content += "<div class=\"container\">";
- content += "<div class=\"row\" style=\"text-align:center;\">";
- content += "<p></p>";
- content += "<div class=\"col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6\">";
- content += "<h5 class=\"alert-info\" id=\"ssdp_t\">{{SSDP}}</h5><hr>";  
- content += "<form action='/login' method='POST'>Log in to use PowerSocket<br>";
- content += "<TABLE align=center>";
- content += "<TR><TD align=right>User:</TD><TD><input type='text' name='USERNAME' placeholder='user name'></TD></TR>";
- content += "<TR><TD>Password:</TD><TD><input type='password' name='PASSWORD' placeholder='password'></TD></TR>";
- content += "<TR><TD colspan=2><input type='submit' name='SUBMIT' value='Submit'></TD></TR>";
- content += "</TABLE>";
- content += "</form>" + msg + "<br>";
- content += "<hr></div></div></div></body></html>";
- //content += "You also can go <a href='/inline'>here</a></body></html>";
- HTTP.send(200, "text/html", content);
+ loginHTMLpage = "<!DOCTYPE html>";
+ loginHTMLpage += "<html lang='ru'>";
+ loginHTMLpage += "<head>";
+ loginHTMLpage += "<meta http-equiv='Content-type' content='text/html; charset=utf-8'>";
+ loginHTMLpage += "<link rel='stylesheet' href='/bootstrap.min.css'>";
+ loginHTMLpage += "<link rel='stylesheet' type='text/css' href='/style.css'>";
+ loginHTMLpage += "<script type='text/javascript' src='/function.js'></script>";
+ loginHTMLpage += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+ loginHTMLpage += "<title>Login Page</title>";
+ loginHTMLpage += "</head>";
+ loginHTMLpage += "<body onload=\"load();\">";
+ loginHTMLpage += "<div class=\"container\">";
+ loginHTMLpage += "<div class=\"row\" style=\"text-align:center;\">";
+ loginHTMLpage += "<p></p>";
+ loginHTMLpage += "<div class=\"col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6\">";
+ loginHTMLpage += "<h5 class=\"alert-info\" id=\"ssdp_t\">{{SSDP}}</h5><hr>";  
+ loginHTMLpage += "<form action='/login' method='POST'>Log in to use PowerSocket<br>";
+ loginHTMLpage += "<TABLE align=center>";
+ loginHTMLpage += "<TR><TD align=right>User:</TD><TD><input type='text' name='USERNAME' placeholder='user name'></TD></TR>";
+ loginHTMLpage += "<TR><TD>Password:</TD><TD><input type='password' name='PASSWORD' placeholder='password'></TD></TR>";
+ loginHTMLpage += "<TR><TD colspan=2><input type='submit' name='SUBMIT' value='Submit'></TD></TR>";
+ loginHTMLpage += "</TABLE>";
+ loginHTMLpage += "</form>" + msg + "<br>";
+ loginHTMLpage += "<hr></div></div></div></body></html>";
+ //loginHTMLpage += "You also can go <a href='/inline'>here</a></body></html>";
+ 
+ HTTP.send(200, "text/html", loginHTMLpage);
 }
 
 //Check if header is present and correct
@@ -156,81 +154,107 @@ void handleNotFound (){
 // Функции API-Set
 // Установка SSDP имени по запросу вида http://192.168.0.101/ssdp?ssdp=proba
 void handle_Set_Ssdp() {
+    if (is_authentified()){
     SSDP_Name = HTTP.arg("ssdp"); // Получаем значение ssdp из запроса сохраняем в глобальной переменной
     saveConfig();                 // Функция сохранения данных во Flash пока пустая
     HTTP.send(200, "text/plain", "OK"); // отправляем ответ о выполнении
+    }
+  HTTP.send(200, "text/html", loginHTMLpage);
 }
 
 // Установка параметров для подключения к внешней AP по запросу вида http://192.168.0.101/ssid?ssid=home2&password=12345678
 void handle_Set_Ssid() {
+  if (is_authentified()){
   _ssid = HTTP.arg("ssid");            // Получаем значение ssid из запроса сохраняем в глобальной переменной
   _password = HTTP.arg("password");    // Получаем значение password из запроса сохраняем в глобальной переменной
   saveConfig();                        // Функция сохранения данных во Flash пока пустая
   HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
+  }
+  HTTP.send(200, "text/html", loginHTMLpage);
 }
 
-// dev authentication
+// dev authentication http://192.168.0.101/devauth?dev_login=admin&dev_pass=123
 void handle_Set_devauth() {
+  if (is_authentified()){
   dev_login = HTTP.arg("dev_login");           
   dev_pass = HTTP.arg("dev_pass");   
   saveConfig();                     
   HTTP.send(200, "text/plain", "OK"); 
+  }
+  HTTP.send(200, "text/html", loginHTMLpage);
 }
 
-// ip settings
-void handle_Set_ip() {
+// ip settings http://192.168.2.158/ip?IPaddr=192.168.2.159&IPmask=255.255.255.0&Gateway=192.168.2.1
+void handle_Set_ip() { 
+  if (is_authentified()){
   IPaddr =  HTTP.arg("IPaddr"); 
   IPmask =  HTTP.arg("IPmask"); 
   Gateway = HTTP.arg("Gateway"); 
   saveConfig();                     
   HTTP.send(200, "text/plain", "OK"); 
+  }
+  HTTP.send(200, "text/html", loginHTMLpage);
 }
 
-//Установка параметров внутренней точки доступа по запросу вида http://192.168.0.101/ssidap?ssidAP=home1&passwordAP=8765439 
-void handle_Set_Ssidap() {              //
+//Установка параметров внутренней точки доступа http://192.168.2.158/ssidap?ssidAP=home1&passwordAP=8765439 
+void handle_Set_Ssidap() {
+  if (is_authentified()){
   _ssidAP = HTTP.arg("ssidAP");         // Получаем значение ssidAP из запроса сохраняем в глобальной переменной
   _passwordAP = HTTP.arg("passwordAP"); // Получаем значение passwordAP из запроса сохраняем в глобальной переменной
   saveConfig();                         // Функция сохранения данных во Flash пока пустая
   HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
+  }
+  HTTP.send(200, "text/html", loginHTMLpage);
 }
 
-//вкл/выкл D4_pin
-void handle_Set_Switch1() {             
+//вкл/выкл D4_pin http://192.168.2.158/Switch1?Switch1=on
+void handle_Set_Switch1() {
+  if (is_authentified()){             
   Switch1 = HTTP.arg("Switch1");        
   if (Switch1 == "on") {  digitalWrite(D4_pin, HIGH); };
   if (Switch1 == "off"){  digitalWrite(D4_pin, LOW);  };
   saveConfig();                         // Функция сохранения данных во Flash
-  HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
+  HTTP.send(200, "text/plain", "ok");   // отправляем ответ о выполнении
+  }
+  HTTP.send(200, "text/html", loginHTMLpage);
 }
-//вкл/выкл D3_pin
-void handle_Set_Switch2() {             
+//вкл/выкл D3_pin http://192.168.2.158/Switch2?Switch2=on
+void handle_Set_Switch2() {
+  if (is_authentified()){             
   Switch2 = HTTP.arg("Switch2");        
   if (Switch2 == "on") {  digitalWrite(D3_pin, HIGH);};
   if (Switch2 == "off"){  digitalWrite(D3_pin, LOW); };
   saveConfig();                         // Функция сохранения данных во Flash
   HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
+  }
+  HTTP.send(200, "text/html", loginHTMLpage);
 }
-
-//вкл/выкл D2_pin
-void handle_Set_Switch3() {             
+//вкл/выкл D2_pin http://192.168.2.158/Switch3?Switch3=on
+void handle_Set_Switch3() {
+  if (is_authentified()){ 
   Switch3 = HTTP.arg("Switch3");        
   if (Switch3 == "on") {  digitalWrite(D2_pin, HIGH);};
   if (Switch3 == "off"){  digitalWrite(D2_pin, LOW); };
   saveConfig();                         // Функция сохранения данных во Flash
   HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
+  }
+  HTTP.send(200, "text/html", loginHTMLpage);
 }
-
-//вкл/выкл D1_pin
-void handle_Set_Switch4() {             
+//вкл/выкл D1_pin http://192.168.2.158/Switch4?Switch4=on
+void handle_Set_Switch4() {
+  if (is_authentified()){              
   Switch4 = HTTP.arg("Switch4");        
   if (Switch4 == "on") {  digitalWrite(D1_pin, HIGH);};
   if (Switch4 == "off") { digitalWrite(D1_pin, LOW); };
   saveConfig();                         // Функция сохранения данных во Flash
   HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
+  }
+  HTTP.send(200, "text/html", loginHTMLpage);
 }
 
-// Перезагрузка модуля по запросу вида http://192.168.0.101/restart?device=ok
+// Перезагрузка модуля по запросу вида http://192.168.2.158/restart?device=ok
 void handle_Restart() {
+  if (is_authentified()){  
   String restart = HTTP.arg("device");          // Получаем значение device из запроса
   if (restart == "ok") {                         // Если значение равно Ок
     HTTP.send(200, "text / plain", "Reset OK"); // Oтправляем ответ Reset OK
@@ -238,7 +262,9 @@ void handle_Restart() {
   }
   else {                                        // иначе
     HTTP.send(200, "text / plain", "No Reset"); // Oтправляем ответ No Reset
+    }
   }
+  HTTP.send(200, "text/html", loginHTMLpage);
 }
 
 void handle_ConfigJSON() {
@@ -250,22 +276,22 @@ void handle_ConfigJSON() {
   JsonObject& json = jsonBuffer.parseObject(root);
   // Заполняем поля json
   json["SSDP"] = SSDP_Name;
-  json["ssidAP"] = _ssidAP;
-  json["passwordAP"] = _passwordAP;
-  json["ssid"] = _ssid;
-  json["password"] = _password;
-  json["ip"] = WiFi.localIP().toString();
-  //json["time"] = GetTime();
-  //json["date"] = GetDate();
-  json["Switch1"] = Switch1;
-  json["Switch2"] = Switch2;
-  json["Switch3"] = Switch3;
-  json["Switch4"] = Switch4;
-  json["dev_login"] = dev_login;
-  json["dev_pass"] = dev_pass;
-  json["IPaddr"] = IPaddr;
-  json["IPmask"] = IPmask;
-  json["Gateway"] = Gateway;
+  if (is_authentified()){ 
+    json["ssidAP"] = _ssidAP;
+    json["passwordAP"] = _passwordAP;
+    json["ssid"] = _ssid;
+    json["password"] = _password;
+    json["ip"] = WiFi.localIP().toString();
+    json["Switch1"] = Switch1;
+    json["Switch2"] = Switch2;
+    json["Switch3"] = Switch3;
+    json["Switch4"] = Switch4;
+    json["dev_login"] = dev_login;
+    json["dev_pass"] = dev_pass;
+    json["IPaddr"] = IPaddr;
+    json["IPmask"] = IPmask;
+    json["Gateway"] = Gateway;
+    }
   // Помещаем созданный json в переменную root
   root = "";
   json.printTo(root);
