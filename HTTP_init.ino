@@ -46,24 +46,8 @@ void handleLogin(){
     HTTP.send(301);
     return;
   }  
-  
-  if (WiFi.status() != WL_CONNECTED) { // В режиме точки доступа логин/пароль будет всегда admin/admin
-      if (HTTP.hasArg("USERNAME") && HTTP.hasArg("PASSWORD")){      
-      if (HTTP.arg("USERNAME") == "admin" &&  HTTP.arg("PASSWORD") == "admin" ){
-      HTTP.sendHeader("Location","/");
-      HTTP.sendHeader("Cache-Control","no-cache");
-      HTTP.sendHeader("Set-Cookie","HTTPSESSIONID=" + session_id);
-      HTTP.send(301);
-      Serial.println("Log in Successful");
-      return;
-    }
-   msg = "<FONT color=red>In AP mode use default login: 'admin', password: 'admin'.</FONT>";
-   Serial.println("Log in Failed");
-   }
-  } 
-  else
-  {
-      if (HTTP.hasArg("USERNAME") && HTTP.hasArg("PASSWORD")){      
+
+  if (HTTP.hasArg("USERNAME") && HTTP.hasArg("PASSWORD")){      
       if (HTTP.arg("USERNAME") == dev_login &&  HTTP.arg("PASSWORD") == dev_pass ){
       HTTP.sendHeader("Location","/");
       HTTP.sendHeader("Cache-Control","no-cache");
@@ -71,11 +55,10 @@ void handleLogin(){
       HTTP.send(301);
       Serial.println("Log in Successful");
       return;
-    }
-   msg = "Wrong username/password! try again.";
-   Serial.println("Log in Failed");
-   }    
-  }
+      }
+  msg = "<FONT color=red>Wrong username/password! Try again.</FONT>";
+  Serial.println("Log in Failed");
+  }    
 
  loginHTMLpage = "<!DOCTYPE html>";
  loginHTMLpage += "<html lang='ru'>";
@@ -95,7 +78,7 @@ void handleLogin(){
  loginHTMLpage += "<h5 class=\"alert-info\" id=\"ssdp_t\">{{SSDP}}</h5><hr>";  
  loginHTMLpage += "<form action='/login' method='POST'>Log in to use PowerSocket<br>";
  loginHTMLpage += "<TABLE align=center>";
- loginHTMLpage += "<TR><TD align=right>User:</TD><TD><input type='text' name='USERNAME' placeholder='user name'></TD></TR>";
+ loginHTMLpage += "<TR><TD align=right>Username:</TD><TD><input type='text' name='USERNAME' placeholder='user name'></TD></TR>";
  loginHTMLpage += "<TR><TD>Password:</TD><TD><input type='password' name='PASSWORD' placeholder='password'></TD></TR>";
  loginHTMLpage += "<TR><TD colspan=2><input type='submit' name='SUBMIT' value='Submit'></TD></TR>";
  loginHTMLpage += "</TABLE>";
@@ -278,16 +261,19 @@ void handle_ConfigJSON() {
   json["SSDP"] = SSDP_Name;
   if (is_authentified()){ 
     json["ssidAP"] = _ssidAP;
-    json["passwordAP"] = _passwordAP;
+    //json["passwordAP"] = _passwordAP;
+    json["passwordAP"] = "********";
     json["ssid"] = _ssid;
-    json["password"] = _password;
+    //json["password"] = _password;
+    json["password"] = "********";
     json["ip"] = WiFi.localIP().toString();
     json["Switch1"] = Switch1;
     json["Switch2"] = Switch2;
     json["Switch3"] = Switch3;
     json["Switch4"] = Switch4;
     json["dev_login"] = dev_login;
-    json["dev_pass"] = dev_pass;
+    //json["dev_pass"] = dev_pass;
+    json["dev_pass"] = "********";
     json["IPaddr"] = IPaddr;
     json["IPmask"] = IPmask;
     json["Gateway"] = Gateway;

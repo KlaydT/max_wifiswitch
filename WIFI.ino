@@ -23,7 +23,7 @@ void WIFIinit() {
   if (WiFi.status() != WL_CONNECTED) { // Если не удалось подключиться запускаем в режиме AP 
     Serial.println("");
     for ( int count=0; count<20; count++ )
-       { digitalWrite(LED, LOW); delay(50); digitalWrite(LED, HIGH); delay(50);}; // мигаме светодиодом 20 раз и гасим его. Он инверсный.
+       { digitalWrite(LED, LOW); delay(50); digitalWrite(LED, HIGH); delay(50);}; // мигаем светодиодом 20 раз и гасим его. Он инверсный.
     Serial.print("Connection fault. Start AP mode. ");
     Serial.println(_ssidAP.c_str());
     WiFi.disconnect(); // Отключаем WIFI
@@ -31,6 +31,9 @@ void WIFIinit() {
     IPAddress apIP(192, 168, 0, 1); //Задаем настройки сети
     WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
     WiFi.softAP(_ssidAP.c_str(), _passwordAP.c_str()); // Включаем WIFI в режиме точки доступа
+    Serial.print("Login/Password: "); Serial.print(dev_login);
+    Serial.print("/"); Serial.println(dev_pass);
+    Serial.print("WiFi Switch IP: "); Serial.println(apIP);
   }
   else { // удалось подключиться 
     digitalWrite(LED, LOW); // зажигаем светодиод. Он инверсный.

@@ -7,7 +7,7 @@
 
 ESP8266WebServer HTTP(80); // Web интерфейс 
 
-String Version =         "v.23.";             // версия скетча
+String Version =         "v.24.";             // версия скетча
 String _ssid     =       "Grand_24";          // Для хранения SSID
 String _password =       "V";          // Для хранения пароля сети
 String _ssidAP =         "SocketSetup";       // SSID AP точки доступа
