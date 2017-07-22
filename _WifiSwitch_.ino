@@ -30,10 +30,14 @@ String Switch1 = "on";
 String Switch2 = "on";
 String Switch3 = "on";
 String Switch4 = "on";
+int switchesState[4] = {0,0,0,0};
+
 int D4_pin = 16;
 int D3_pin = 14;
 int D2_pin = 12;
 int D1_pin = 13;
+
+int switchesPins[4] = {13,12,14,16};
 
 int LED = 2;
 

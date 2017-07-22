@@ -1,5 +1,14 @@
 var set_real_time;
 
+//Init load
+$(load);
+
+//Switched handler
+$(".switch_cl").click(function(){
+    console.log("click");
+    $(this).toggleClass("btn-success btn-danger");
+});
+
 function handleServerResponse() {
     clearTimeout(set_real_time);
     var res = jsonResponse.time.split(":");
@@ -63,8 +72,8 @@ function set_ssdp(submit) {
 
 // -----------------------------------------------------------------------------------------------
 function set_switch(submit, sw, cmd) {
-    server = "/Switch?Switch="+sw+"&cmd="+cmd;
-    document.getElementById('switch_t'+sw).innerHTML = cmd;
+    server = "/Switch?Switch=" + sw + "&cmd=" + cmd;
+    document.getElementById('switch_t' + sw).innerHTML = cmd;
     send_request(submit, server);
     return false;
 }

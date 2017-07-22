@@ -10,11 +10,7 @@ input:invalid + input[type=submit] {
  pointer-events:none;
  opacity:0.5;
 }
-.col-sm-offset-2 {
- background-color:#fff;
- box-shadow:0 12px 15px rgba(0, 0, 0, 0.4);
- padding:20px;
-}
+
 
 /* device */
 .block {
@@ -92,4 +88,11 @@ ul#history {
 }
 #history li {
  margin-left: -31px;
+}
+
+.from_top{
+	margin-top: 40px;
+	background-color:#fff;
+ 	box-shadow:-10px 20px 40px rgba(0, 0, 0, 0.1);
+ 	padding:20px;
 }

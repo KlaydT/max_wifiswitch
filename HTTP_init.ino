@@ -7,10 +7,11 @@ void HTTP_init(void) {
   HTTP.on("/devauth",       handle_Set_devauth);
   HTTP.on("/ssidap",        handle_Set_Ssidap);   // Установить имя и пароль для точки доступа по запросу вида /ssidap?ssidAP=home1&passwordAP=8765439
   HTTP.on("/restart",       handle_Restart);      // Перезагрузка модуля по запросу вида /restart?device=ok
-  HTTP.on("/Switch1",       handle_Set_Switch1);
-  HTTP.on("/Switch2",       handle_Set_Switch2);
-  HTTP.on("/Switch3",       handle_Set_Switch3);
-  HTTP.on("/Switch4",       handle_Set_Switch4);
+  // HTTP.on("/Switch1",       handle_Set_Switch1);
+  // HTTP.on("/Switch2",       handle_Set_Switch2);
+  // HTTP.on("/Switch3",       handle_Set_Switch3);
+  // HTTP.on("/Switch4",       handle_Set_Switch4);
+  HTTP.on("/Switch",       handle_Set_Switch);
   HTTP.on("/ip",            handle_Set_ip);
   
   HTTP.on("/login",         handleLogin);
@@ -190,49 +191,65 @@ void handle_Set_Ssidap() {
   HTTP.send(200, "text/html", loginHTMLpage);
 }
 
-//вкл/выкл D4_pin http://192.168.2.158/Switch1?Switch1=on
-void handle_Set_Switch1() {
-  if (is_authentified()){             
-  Switch1 = HTTP.arg("Switch1");        
-  if (Switch1 == "on") {  digitalWrite(D4_pin, HIGH); };
-  if (Switch1 == "off"){  digitalWrite(D4_pin, LOW);  };
-  saveConfig();                         // Функция сохранения данных во Flash
-  HTTP.send(200, "text/plain", "ok");   // отправляем ответ о выполнении
+// //вкл/выкл D4_pin http://192.168.2.158/Switch1?Switch1=on
+// void handle_Set_Switch1() {
+//   if (is_authentified()){             
+//   Switch1 = HTTP.arg("Switch1");        
+//   if (Switch1 == "on") {  digitalWrite(D4_pin, HIGH); };
+//   if (Switch1 == "off"){  digitalWrite(D4_pin, LOW);  };
+//   saveConfig();                         // Функция сохранения данных во Flash
+//   HTTP.send(200, "text/plain", "ok");   // отправляем ответ о выполнении
+//   }
+//   HTTP.send(200, "text/html", loginHTMLpage);
+// }
+// //вкл/выкл D3_pin http://192.168.2.158/Switch2?Switch2=on
+// void handle_Set_Switch2() {
+//   if (is_authentified()){             
+//   Switch2 = HTTP.arg("Switch2");        
+//   if (Switch2 == "on") {  digitalWrite(D3_pin, HIGH);};
+//   if (Switch2 == "off"){  digitalWrite(D3_pin, LOW); };
+//   saveConfig();                         // Функция сохранения данных во Flash
+//   HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
+//   }
+//   HTTP.send(200, "text/html", loginHTMLpage);
+// }
+// //вкл/выкл D2_pin http://192.168.2.158/Switch3?Switch3=on
+// void handle_Set_Switch3() {
+//   if (is_authentified()){ 
+//   Switch3 = HTTP.arg("Switch3");        
+//   if (Switch3 == "on") {  digitalWrite(D2_pin, HIGH);};
+//   if (Switch3 == "off"){  digitalWrite(D2_pin, LOW); };
+//   saveConfig();                         // Функция сохранения данных во Flash
+//   HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
+//   }
+//   HTTP.send(200, "text/html", loginHTMLpage);
+// }
+// //вкл/выкл D1_pin http://192.168.2.158/Switch4?Switch4=on
+// void handle_Set_Switch4() {
+//   if (is_authentified()){              
+//   Switch4 = HTTP.arg("Switch4");        
+//   if (Switch4 == "on") {  digitalWrite(D1_pin, HIGH);};
+//   if (Switch4 == "off") { digitalWrite(D1_pin, LOW); };
+//   saveConfig();                         // Функция сохранения данных во Flash
+//   HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
+//   }
+//   HTTP.send(200, "text/html", loginHTMLpage);
+// }
+
+//вкл/выкл розетки
+void handle_Set_Switch() {             
+  String switchNumStr = HTTP.arg("Switch");
+  int switchNum = switchNumStr.toInt() - 1;
+  if (switchesState[switchNum] == 0) {
+    switchesState[switchNum] = 1;
+    digitalWrite(switchesPins[switchNum], HIGH);
+  } else {
+    switchesState[switchNum] = 0;
+    digitalWrite(switchesPins[switchNum], LOW);
   }
-  HTTP.send(200, "text/html", loginHTMLpage);
-}
-//вкл/выкл D3_pin http://192.168.2.158/Switch2?Switch2=on
-void handle_Set_Switch2() {
-  if (is_authentified()){             
-  Switch2 = HTTP.arg("Switch2");        
-  if (Switch2 == "on") {  digitalWrite(D3_pin, HIGH);};
-  if (Switch2 == "off"){  digitalWrite(D3_pin, LOW); };
+
   saveConfig();                         // Функция сохранения данных во Flash
   HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
-  }
-  HTTP.send(200, "text/html", loginHTMLpage);
-}
-//вкл/выкл D2_pin http://192.168.2.158/Switch3?Switch3=on
-void handle_Set_Switch3() {
-  if (is_authentified()){ 
-  Switch3 = HTTP.arg("Switch3");        
-  if (Switch3 == "on") {  digitalWrite(D2_pin, HIGH);};
-  if (Switch3 == "off"){  digitalWrite(D2_pin, LOW); };
-  saveConfig();                         // Функция сохранения данных во Flash
-  HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
-  }
-  HTTP.send(200, "text/html", loginHTMLpage);
-}
-//вкл/выкл D1_pin http://192.168.2.158/Switch4?Switch4=on
-void handle_Set_Switch4() {
-  if (is_authentified()){              
-  Switch4 = HTTP.arg("Switch4");        
-  if (Switch4 == "on") {  digitalWrite(D1_pin, HIGH);};
-  if (Switch4 == "off") { digitalWrite(D1_pin, LOW); };
-  saveConfig();                         // Функция сохранения данных во Flash
-  HTTP.send(200, "text/plain", "OK");   // отправляем ответ о выполнении
-  }
-  HTTP.send(200, "text/html", loginHTMLpage);
 }
 
 // Перезагрузка модуля по запросу вида http://192.168.2.158/restart?device=ok
@@ -252,31 +269,35 @@ void handle_Restart() {
 
 void handle_ConfigJSON() {
   String root = "{}";  // Формировать строку для отправки в браузер json формат
+  String rootSW = "{}";
   //{"SSDP":"SSDP-test","ssid":"home","password":"i12345678","ssidAP":"WiFi","passwordAP":"","ip":"192.168.0.101"}
   // Резервируем память для json обекта буфер может рости по мере необходимти, предпочтительно для ESP8266
   DynamicJsonBuffer jsonBuffer;
+  DynamicJsonBuffer jsonBufferSW;
   //  вызовите парсер JSON через экземпляр jsonBuffer
   JsonObject& json = jsonBuffer.parseObject(root);
+  JsonObject& jsonSW = jsonBufferSW.parseObject(rootSW);
+  
+  //Заполняем состояние розеток
+    jsonSW["1"] = Switch1;
+    jsonSW["2"] = Switch2;
+    jsonSW["3"] = Switch3;
+    jsonSW["4"] = Switch4;
+    jsonSW.printTo(rootSW);
   // Заполняем поля json
   json["SSDP"] = SSDP_Name;
   if (is_authentified()){ 
     json["ssidAP"] = _ssidAP;
-    //json["passwordAP"] = _passwordAP;
     json["passwordAP"] = "********";
     json["ssid"] = _ssid;
-    //json["password"] = _password;
     json["password"] = "********";
     json["ip"] = WiFi.localIP().toString();
-    json["Switch1"] = Switch1;
-    json["Switch2"] = Switch2;
-    json["Switch3"] = Switch3;
-    json["Switch4"] = Switch4;
     json["dev_login"] = dev_login;
-    //json["dev_pass"] = dev_pass;
     json["dev_pass"] = "********";
     json["IPaddr"] = IPaddr;
     json["IPmask"] = IPmask;
     json["Gateway"] = Gateway;
+    json["Switches"] = rootSW;
     }
   // Помещаем созданный json в переменную root
   root = "";
