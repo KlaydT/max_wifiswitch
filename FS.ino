@@ -2,12 +2,6 @@
 void FS_init(void) {
   Serial.println("Init File System");
   SPIFFS.begin();
-  //HTTP страницы для работы с FFS
-  //called when the url is not defined here use it to load content from SPIFFS
-  HTTP.onNotFound([]() {
-    if (!handleFileRead(HTTP.uri()))
-      HTTP.send(404, "text/plain", "FileNotFound");
-  }); 
 }
 
 // Здесь функции для работы с файловой системой
@@ -27,19 +21,4 @@ String getContentType(String filename) {
   else if (filename.endsWith(".zip")) return "application/x-zip";
   else if (filename.endsWith(".gz")) return "application/x-gzip";
   return "text/plain";
-}
-
-bool handleFileRead(String path) {
-  if (path.endsWith("/")) path += "index.htm";
-  String contentType = getContentType(path);
-  String pathWithGz = path + ".gz";
-  if (SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)) {
-    if (SPIFFS.exists(pathWithGz))
-      path += ".gz";
-    File file = SPIFFS.open(path, "r");
-    size_t sent = HTTP.streamFile(file, contentType);
-    file.close();
-    return true;
-  }
-  return false;
 }

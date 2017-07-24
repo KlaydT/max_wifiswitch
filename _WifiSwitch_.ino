@@ -5,80 +5,83 @@
 #include <ArduinoJson.h>  
 #include <WiFiClient.h>
 
+#define sessionKeyLength 30
+#define numOfParameters 11
+#define numOfSwitches 4
+#define numOfFreeFiles 4
+
 ESP8266WebServer HTTP(80); // Web интерфейс 
 
-String Version =         "v.24.";             // версия скетча
-String _ssid     =       "Grand_24";          // Для хранения SSID
-String _password =       "V";          // Для хранения пароля сети
-String _ssidAP =         "SocketSetup";       // SSID AP точки доступа
-String _passwordAP =     "";                  // пароль точки доступа
-String dev_login =       "admin";
-String dev_pass =        "admin";
-String IPaddr =          "";
-String IPmask =          "";
-String Gateway =         "";
-String SSDP_Name =       "WiFi Power Switch"; // Имя SSDP
+String freeToUse[numOfFreeFiles] = {
+	"bootstrap.min.css",
+	"style.css",
+	"jquery-3.2.1.min.js",
+	"login.htm"
+};
 
-int selectchar =         0;
-String simbol =          "";
-String pattern =         "qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM-1234567890";
-String session_id =      "";
+String parametersName[numOfParameters] = {
+	"version",
+	"ssidName",
+	"ssidPassword",
+	"ssidAPName",
+	"ssidAPPassword",
+	"dev_login",
+	"dev_pass",
+	"IPaddr",
+	"IPmask",
+	"Gateway",
+	"SSDPName"
+};
 
-String jsonConfig = "{}";
+String parametersValue[numOfParameters] = {
+	"v.24.",	            // версия скетча
+	"Grand_24",				// Для хранения SSID
+	"",				        // Для хранения пароля сети
+	"SocketSetup",       	// SSID AP точки доступа
+	"",                  	// пароль точки доступа
+	"admin",
+	"admin",
+	"",
+	"",
+	"",
+	"WiFi Power Switch"		// Имя SSDP
+};
 
-String Switch1 = "on";
-String Switch2 = "on";
-String Switch3 = "on";
-String Switch4 = "on";
-int switchesState[4] = {0,0,0,0};
+int iaa = 0;
+String session_id = "";
+String jsonConfig = "";
 
-int D4_pin = 16;
-int D3_pin = 14;
-int D2_pin = 12;
-int D1_pin = 13;
-
-int switchesPins[4] = {13,12,14,16};
+int switchesState[numOfSwitches] = {0,0,0,0};
+int switchesPins[numOfSwitches] = {13,12,14,16};
+int pinState[2] = {LOW,HIGH};
 
 int LED = 2;
 
-String loginHTMLpage = "";
-
 void setup() {
-  Serial.begin(115200);
-  Serial.println("");
-  Serial.println(Version);
+	Serial.begin(115200);
+	Serial.println("");
+	Serial.println(getParameter("version"));
 
-  FS_init();              //Запускаем файловую систему
-  loadConfig();           //Загружаем сохраненные данные
+  session_id = SessionID_gen(sessionKeyLength);
 
-  Serial.print("Sw1: "); Serial.print(Switch1); Serial.print(", ");
-  Serial.print("Sw2: "); Serial.print(Switch2); Serial.print(", ");
-  Serial.print("Sw3: "); Serial.print(Switch3); Serial.print(", ");
-  Serial.print("Sw4: "); Serial.print(Switch4); Serial.println(". ");
+	FS_init();              //Запускаем файловую систему
+	loadConfig();           //Загружаем сохраненные данные
 
-  pinMode(D4_pin, OUTPUT);
-  if (Switch1 == "on") { digitalWrite(D4_pin, HIGH); };
-  if (Switch1 == "off"){ digitalWrite(D4_pin, LOW);  };
-  pinMode(D3_pin, OUTPUT); 
-  if (Switch2 == "on") { digitalWrite(D3_pin, HIGH); };
-  if (Switch2 == "off"){ digitalWrite(D3_pin, LOW);  };
-  pinMode(D2_pin, OUTPUT); 
-  if (Switch3 == "on") { digitalWrite(D2_pin, HIGH); };
-  if (Switch3 == "off"){ digitalWrite(D2_pin, LOW);  };
-  pinMode(D1_pin, OUTPUT); 
-  if (Switch4 == "on") { digitalWrite(D1_pin, HIGH); };
-  if (Switch4 == "off"){ digitalWrite(D1_pin, LOW);  };
+	for (int i=0; i<numOfSwitches; i++) {
+		Serial.print("sw"); Serial.print(i+1); Serial.print(": "); Serial.print(switchesState[i]);
+		pinMode(switchesPins[i], OUTPUT);
+		digitalWrite(switchesPins[i], pinState[switchesState[i]]);
+	}
 
-  pinMode(LED, OUTPUT); 
-  digitalWrite(LED, HIGH);
-  
-  SessionID_gen();                   //Генерируем ID сесси
-  WIFIinit();                        //Запускаем WIFI   
-  SSDP_init();                       //запускаем SSDP 
-  HTTP_init();                       //запускаем HTTP
+	pinMode(LED, OUTPUT); 
+	digitalWrite(LED, HIGH);
+
+	WIFIinit();                        //Запускаем WIFI   
+	SSDP_init();                       //Запускаем SSDP 
+	HTTP_init();                       //Запускаем HTTP
 }
 
 void loop() {
-  HTTP.handleClient();
-  delay(1);
+	HTTP.handleClient();
+	delay(1);
 }

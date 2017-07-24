@@ -13,11 +13,19 @@ function load() {
     $.ajax("configs.json")
         .done(function(data){
             initSwitches(data['Switches']);
+            initForm(data);
+            $('#SSDPNameTop').text(data['SSDPName']);
         })
 
     //Switched handler
     $(".switch_cl").click(function(){
         $(this).toggleClass("btn-success btn-danger");
+    });
+    $("#reset").click(function(){
+        if (confirm('Вы уверены?')) {
+            window.location = "reset";
+        } else {
+        }
     });
     // if (xmlHttp.readyState == 0 || xmlHttp.readyState == 4) {
     //     xmlHttp.open('PUT', 'configs.json', true);
@@ -31,13 +39,19 @@ function load() {
 
 function initSwitches(switches){
     for(sw in switches){
-        if (switches[sw] == "on"){
+        if (switches[sw] == "1"){
             $("#sw-"+sw).addClass("btn-success");
         } else {
             $("#sw-"+sw).addClass("btn-danger");
         }
     }
 
+}
+
+function initForm(data){
+    for(setting in data){
+        $("input[name='"+setting+"']").val(data[setting]);
+    }
 }
 
 function loadBlock(data2) {
