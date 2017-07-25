@@ -2,6 +2,13 @@
 void FS_init(void) {
   Serial.println("Init File System");
   SPIFFS.begin();
+  
+  Dir dir = SPIFFS.openDir("/");
+  while (dir.next()) {
+    String fileName = dir.fileName();
+    Serial.println(fileName);
+    size_t fileSize = dir.fileSize();
+  }
 }
 
 // Здесь функции для работы с файловой системой

@@ -8,15 +8,16 @@
 #define sessionKeyLength 30
 #define numOfParameters 11
 #define numOfSwitches 4
-#define numOfFreeFiles 4
+#define numOfFreeFiles 5
 
 ESP8266WebServer HTTP(80); // Web интерфейс 
 
 String freeToUse[numOfFreeFiles] = {
-	"bootstrap.min.css",
-	"style.css",
-	"jquery-3.2.1.min.js",
-	"login.htm"
+	"/bootstrap.min.css",
+	"/style.css",
+	"/jquery-3.2.1.min.js",
+	"/login.htm",
+	"/SSDPName"
 };
 
 String parametersName[numOfParameters] = {

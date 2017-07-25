@@ -12,7 +12,7 @@ void HTTP_init(void) {
   HTTP.on("/reset", [](){
      mainHandler(handle_Restart); 
   });
-  HTTP.on("/ssdpname", handleSSDP_Name); 
+  HTTP.on("/SSDPName", handleSSDP_Name); 
   HTTP.on("/auth", handleAuth); 
   HTTP.onNotFound([](){
      mainHandler(anyHandler); 
@@ -145,6 +145,7 @@ void handle_Restart() {
 
 
 void handleSSDP_Name() {
+  Serial.println("SSDPName" + getParameter("SSDPName"));
   HTTP.send(200, "text/plain", getParameter("SSDPName"));
 }
 
