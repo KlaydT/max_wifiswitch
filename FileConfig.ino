@@ -32,7 +32,8 @@ bool loadConfig() {
 }
 
 
-bool saveConfig() {                                       // Запись данных в файл config.json
+bool saveConfig() {
+#if !defined(DEBUG)                                        // Запись данных в файл config.json
   DynamicJsonBuffer jsonBuffer;                           // Резервируем памяь для json обекта буфер может рости по мере необходимти предпочтительно для ESP8266 
   JsonObject& json = jsonBuffer.parseObject(jsonConfig);  //  вызовите парсер JSON через экземпляр jsonBuffer
   
@@ -53,6 +54,7 @@ bool saveConfig() {                                       // Запись дан
     //Serial.println("Failed to open config file for writing");
     return false;
   }
-  json.printTo(configFile);                               // Записываем строку json в файл 
+  json.printTo(configFile);
+#endif                               // Записываем строку json в файл 
   return true;
 }

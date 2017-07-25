@@ -10,6 +10,8 @@
 #define numOfSwitches 4
 #define numOfFreeFiles 5
 
+#define DEBUG
+
 ESP8266WebServer HTTP(80); // Web интерфейс 
 
 String freeToUse[numOfFreeFiles] = {
@@ -66,7 +68,10 @@ void setup() {
   session_id = SessionID_gen(sessionKeyLength);
 
 	FS_init();              //Запускаем файловую систему
+
+#if !defined(DEBUG)	
 	loadConfig();           //Загружаем сохраненные данные
+#endif
 
 	for (int i=0; i<numOfSwitches; i++) {
 		Serial.print("sw"); Serial.print(i+1); Serial.print(": "); Serial.print(switchesState[i]);
@@ -84,5 +89,5 @@ void setup() {
 
 void loop() {
 	HTTP.handleClient();
-	delay(1);
+	delay(10);
 }

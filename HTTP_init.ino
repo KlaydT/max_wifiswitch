@@ -55,6 +55,9 @@ void mainHandler(void handler()){
 
 
 void anyHandler(){
+  #if defined(DEBUG)  
+       Serial.print(HTTP.uri());
+  #endif
   if (!handleFileRead(HTTP.uri())){
       HTTP.send(404, "text/plain", "FileNotFound");
   }
@@ -157,12 +160,12 @@ void handle_ConfigJSON() {
   DynamicJsonBuffer jsonBuffer;
   JsonObject& json = jsonBuffer.parseObject(root);
   // Заполняем поля json
-  for (int i = 0; i < numOfParameters; ){
+  for (int i = 0; i < numOfParameters; i++){
     json[parametersName[i]] = parametersValue[i];
   }
   //Заполняем состояние розеток
   JsonObject& jsonSW = json.createNestedObject("Switches");
-  for (int i = 0; i < numOfSwitches; ){
+  for (int i = 0; i < numOfSwitches; i++){
     jsonSW[String(i)+1] = switchesState[i];
   }
   // Помещаем созданный json в переменную root
