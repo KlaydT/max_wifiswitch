@@ -52,7 +52,6 @@ String parametersValue[numOfParameters] = {
 
 int iaa = 0;
 String session_id = "";
-String jsonConfig = "";
 
 int switchesState[numOfSwitches] = {0,0,0,0};
 int switchesPins[numOfSwitches] = {13,12,14,16};
@@ -68,13 +67,21 @@ void setup() {
   session_id = SessionID_gen(sessionKeyLength);
 
 	FS_init();              //Запускаем файловую систему
-
-#if !defined(DEBUG)	
 	loadConfig();           //Загружаем сохраненные данные
+
+#if defined(DEBUG)
+
+	for (int i=0; i<numOfSwitches; i++) {
+		Serial.print("sw"); Serial.print(i); Serial.print(": "); Serial.print(switchesState[i]); Serial.println("");
+	}
+
+	for (int i=0; i<numOfParameters; i++) {
+		Serial.print(parametersName[i]); Serial.print(": "); Serial.println(parametersValue[i]);
+	}
+
 #endif
 
 	for (int i=0; i<numOfSwitches; i++) {
-		Serial.print("sw"); Serial.print(i+1); Serial.print(": "); Serial.print(switchesState[i]);
 		pinMode(switchesPins[i], OUTPUT);
 		digitalWrite(switchesPins[i], pinState[switchesState[i]]);
 	}

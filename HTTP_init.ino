@@ -119,14 +119,20 @@ void handle_Setup() {
   }
 
   saveConfig();
-  HTTP.send(200, "text/plain", "OK");  
+  ///HTTP.send(200, "text/plain", "OK");  
+  redirectToMain();
 }
 
 
 //вкл/выкл розетки
 void handle_Set_Switch() {             
   String switchNumStr = HTTP.arg("sw");
-  int switchNum = switchNumStr.toInt() - 1;
+  int switchNum = switchNumStr.toInt();
+
+  #if defined(DEBUG)
+    Serial.print("Switching: "); Serial.println(switchNumStr);
+  #endif
+
   if (switchesState[switchNum] == 0) {
     switchesState[switchNum] = 1;
     digitalWrite(switchesPins[switchNum], HIGH);
@@ -142,40 +148,40 @@ void handle_Set_Switch() {
 
 // Перезагрузка модуля по запросу вида http://192.168.2.158/restart?device=ok
 void handle_Restart() {
-  HTTP.send(200, "text/plain", "OK");
+  //HTTP.send(200, "text/plain", "OK");
+  redirectToLogin();
   ESP.restart();                                // перезагружаем модуль
 }
 
 
 void handleSSDP_Name() {
-  Serial.println("SSDPName" + getParameter("SSDPName"));
+  #if defined(DEBUG)
+    Serial.println("SSDPName" + getParameter("SSDPName"));
+  #endif
   HTTP.send(200, "text/plain", getParameter("SSDPName"));
 }
 
 
 void handle_ConfigJSON() {
-  String root = "";
-  //{"SSDP":"SSDP-test","ssid":"home","password":"i12345678","ssidAP":"WiFi","passwordAP":"","ip":"192.168.0.101"}
-  // Резервируем память для json обекта буфер может рости по мере необходимти, предпочтительно для ESP8266
-  DynamicJsonBuffer jsonBuffer;
-  JsonObject& json = jsonBuffer.parseObject(root);
-  // Заполняем поля json
-  for (int i = 0; i < numOfParameters; i++){
-    json[parametersName[i]] = parametersValue[i];
-  }
-  //Заполняем состояние розеток
-  JsonObject& jsonSW = json.createNestedObject("Switches");
-  for (int i = 0; i < numOfSwitches; i++){
-    jsonSW[String(i)+1] = switchesState[i];
-  }
-  // Помещаем созданный json в переменную root
-  json.printTo(root);
+        #if defined(DEBUG)
+          Serial.println("Sending JSON");
+        #endif
+  String root = getParametersAsJSON();
+        #if defined(DEBUG)
+          Serial.println(root);
+        #endif
   HTTP.send(200, "text/json", root);
 }
 
 
 void redirectToLogin(){
   HTTP.sendHeader("Location", String("/login.htm"), true);
+  HTTP.send( 302, "text/plain", "");
+  return;
+}
+
+void redirectToMain(){
+  HTTP.sendHeader("Location", String("/"), true);
   HTTP.send( 302, "text/plain", "");
   return;
 }
