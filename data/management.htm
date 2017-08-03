@@ -1,132 +1,110 @@
 ﻿<!DOCTYPE html>
 <html lang="ru">
- <head>
-  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-  <link rel="stylesheet" href="/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="/style.css">
-  <script type="text/javascript" src="/function.js"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Management</title>
-  <script type="text/javascript">
-   var set_real_time;
-   function handleServerResponse(){
-    clearTimeout(set_real_time);
-    var res = jsonResponse.time.split(":");
-    real_time(hours=res[0],min=res[1],sec=res[2]);
-    document.body.style.backgroundColor="rgb("+jsonResponse.rgb+")";
-   }
-   function real_time(hours,min,sec) {
-   sec=Number(sec)+1;
-    if (sec>=60){min=Number(min)+1;sec=0;}
-    if (min>=60){hours=Number(hours)+1;min=0;}
-    if (hours>=24){hours=0};
-    document.getElementById("time").innerHTML = hours+":"+min+":"+sec;
-    set_real_time = setTimeout("real_time("+hours+","+min+","+sec+");", 1000);
-   }
-   function load_time(submit){
-    server = "/Time";
-    send_request(submit,server);
-    load();
-   }
-   function time_zone(submit){
-    server = "/TimeZone?timezone="+val('timezone');
-    send_request(submit,server);
-   }
-   function set_time_zone(submit){
-    var set_date = new Date();
-    var gmtHours = -set_date.getTimezoneOffset()/60;
-    document.getElementById('timezone').value = gmtHours;
-    server = "/TimeZone?timezone="+gmtHours;
-    send_request(submit,server);
-   }
-   function set_ssid(submit){
-    server = "/ssid?ssid="+val('ssid')+"&password="+encodeURIComponent(val('password'));
-    send_request(submit,server);
-    alert("Измененя вступят в силу после перезагрузки. Пожалуйта перезагрузите устройство.");
-   }
-   function set_devauth(submit){
-    server = "/devauth?dev_login="+val('dev_login')+"&dev_pass="+encodeURIComponent(val('dev_pass'));
-    send_request(submit,server);
-    alert("Измененя вступят в силу после перезагрузки. Пожалуйта перезагрузите устройство.");
-   }
-   function set_ssid_ap(submit){
-    server = "/ssidap?ssidAP="+val('ssidap')+"&passwordAP="+encodeURIComponent(val('passwordAp'));
-    send_request(submit,server);
-    alert("Измененя вступят в силу после перезагрузки. Пожалуйта перезагрузите устройство.");
-   }
-   function set_ip(submit){
-    server = "/ip?IPaddr="+val('IPaddr')+"&IPmask="+val('IPmask')+"&Gateway="+val('Gateway');
-    send_request(submit,server);
-    alert("Измененя вступят в силу после перезагрузки. Пожалуйта перезагрузите устройство.");
-   }
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type"/>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+        <title>
+            Management
+        </title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row" style="text-align:center;">
+                <div class="col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 from_top">
+                    <h5 class="alert-info" id="SSDPNameTop">
+                        {{SSDP}}
+                    </h5>
+                    <hr/>
+                    <h2>
+                        Имя устройства
+                    </h2>
+                    <form id="setup" action="setup" method="POST">
+                        <input class="form-control" name="SSDPName" pattern="[0-9a-zA-Zа-яА-Я. ]{1,20}" placeholder="Имя устройства" value="{{SSDP}}"/>
+                        <hr/>
+                        <h2>
+                            Параметры вашей WiFi сети
+                        </h2>
+                        <input class="form-control" name="ssidName" pattern="[0-9a-zA-Z_.]{1,15}" placeholder="Имя WiFi сети" value="{{ssid}}"/>
+                        <input class="form-control" name="ssidPassword" pattern=".{8,15}" placeholder="Пароль" type="password" value="{{password}}"/>
+                        <hr/>
+                        <h2>
+                            WiFi по умолчанию
+                        </h2>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <input class="form-control" name="ssidAPName" pattern="[0-9a-zA-Z_.]{1,15}" placeholder="Имя WiFi сети" value="{{ssidAP}}"/>
+                                <input class="form-control" name="ssidAPPassword" pattern=".{8,15}" placeholder="Пароль" type="password" value="{{passwordAP}}"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="alert alert-dismissible alert-warning">
+                                    Если устройство не подключится к вашей сети, оно создаст свою сеть. Пустой пароль означает 'открытая' сеть.
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <h2>
+                            Login/password устройства
+                        </h2>
+                        <input class="form-control" name="dev_login" pattern="[0-9a-zA-Z_.]{1,15}" placeholder="Login" value="{{dev_login}}"/>
+                        <input class="form-control" name="dev_pass" placeholder="Пароль" type="password" value="{{dev_pass}}"/>
+                        <hr/>
+                        <h2>
+                            IP настройки
+                        </h2>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <b>
+                                    IP адрес
+                                </b>
+                                <input class="form-control" name="IPaddr" pattern="[0-9.]{1,15}" placeholder="IP address" value="{{IPaddr}}"/>
+                                <b>
+                                    Маска сети
+                                </b>
+                                <input class="form-control" name="IPmask" pattern="[0-9.]{1,15}" placeholder="MASK" value="{{IPmask}}"/>
+                                <b>
+                                    Шлюз
+                                </b>
+                                <input class="form-control" name="Gateway" pattern="[0-9.]{1,15}" placeholder="Default gateway" value="{{Gateway}}"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="alert alert-dismissible alert-warning">
+                                    Оставьте поля не заполненными если адреса будут назначаться сервером DHCP. Или вы не знаете что это такое.
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <input class="btn btn-block btn-success" type="submit" value="Сохранить"/>
+                    </form>
+                    <hr/>
+                    <a class="btn btn-block btn-default" href="/">
+                        На главную
+                    </a>
+                    <a id="reset" class="btn btn-block btn-danger">
+                        Перегрузить устройство
+                    </a>
+                    <a class="btn btn-block btn-warning" href="/auth?DISCONNECT=YES">
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+        <script src="head.min.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            head.load("bootstrap.min.css", function() {
+                head.load("style.css");
+            });
 
-   function set_ssdp(submit){
-    server = "/ssdp?ssdp="+val('ssdp');
-    send_request(submit,server);
-    document.getElementById('ssdp_t').innerHTML = val('ssdp');
-   }
-   function restart(submit,texts){
-    if (confirm(texts)) {
-	 server = "/restart?device=ok";
-     send_request(submit,server);
-     return true;
-    } else {
-     return false;
-    }
-   }
-  </script>
- </head>
- <body onload="load();">
-  <div class="container">
-   <div class="row" style="text-align:center;">
-   <p></p>
-    <div class="col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6">
-     <h5 class="alert-info" id="ssdp_t">{{SSDP}}</h5>
-     <hr>
-     <h2>Имя устройства</h2>
-     <input id="ssdp" value="{{SSDP}}" class="form-control" pattern="[0-9a-zA-Zа-яА-Я. ]{1,20}" placeholder="Имя устройства">
-     <input class="btn btn-block btn-success" value="Сохранить" onclick="set_ssdp(this);" type="submit">
-     <hr>
-     <h2>Параметры вашей WiFi сети</h2>
-     <input id="ssid" value="{{ssid}}" class="form-control" pattern="[0-9a-zA-Z.]{1,15}" placeholder="Имя WiFi сети">
-     <input id="password" value="{{password}}" pattern=".{8,15}" onfocus="this.type='text'" type="password" class="form-control" placeholder="Пароль">
-     <input class="btn btn-block btn-success" value="Сохранить" onclick="set_ssid(this);" type="submit">
-     <hr>
-     <h2>WiFi по умолчанию</h2>
-     <div class="row">
-      <div class="col-sm-6">
-       <input id="ssidap" value="{{ssidAP}}" class="form-control" pattern="[0-9a-zA-Z.]{1,15}" placeholder="Имя WiFi сети">
-       <input id="passwordAp" value="{{passwordAP}}" pattern=".{8,15}" onfocus="this.type='text'" type="password" class="form-control" placeholder="Пароль">
-       <input class="btn btn-block btn-success" value="Сохранить" onclick="set_ssid_ap(this);" type="submit">
-      </div>
-      <div class="col-sm-6">
-       <div class="alert alert-dismissible alert-warning">Если устройство не подключится к вашей сети, оно создаст свою сеть. Пустой пароль означает 'открытая' сеть.</div>
-      </div>
-     </div>
-     <hr>
-     <h2>Login/password устройства</h2>
-     <input id="dev_login" value="{{dev_login}}" class="form-control" pattern="[0-9a-zA-Z.]{1,15}" placeholder="Login">
-     <input id="dev_pass" value="{{dev_pass}}" onfocus="this.type='text'" type="password" class="form-control" placeholder="Пароль">
-     <input class="btn btn-block btn-success" value="Сохранить" onclick="set_devauth(this);" type="submit">
-     <hr>
-     <h2>IP настройки</h2>
-     <div class="row">
-      <div class="col-sm-6">
-       <B>IP адрес</B>  <input id="IPaddr"  value="{{IPaddr}}"  class="form-control" pattern="[0-9.]{1,15}" placeholder="IP address">
-       <B>Маска сети</B><input id="IPmask"  value="{{IPmask}}"  class="form-control" pattern="[0-9.]{1,15}" placeholder="MASK">
-       <B>Шлюз</B>      <input id="Gateway" value="{{Gateway}}" class="form-control" pattern="[0-9.]{1,15}" placeholder="Default gateway">
-       <input class="btn btn-block btn-success" value="Сохранить" onclick="set_ip(this);" type="submit">
-      </div>
-      <div class="col-sm-6">
-       <div class="alert alert-dismissible alert-warning">Оставьте поля не заполненными если адреса будут назначаться сервером DHCP. Или вы не знаете что это такое.</div>
-      </div>
-     </div>
-     <hr>
-     <a class="btn btn-block btn-default" href="/">На главную</a>
-     <input class="btn btn-block btn-danger" value="Перезагрузить устройство" onclick="restart(this,'Вы действительно хотите перезагрузить устройство?');" type="submit">
-     <a class="btn btn-block btn-warning" href="/login?DISCONNECT=YES">Logout</a>
-    </div>
-   </div>
-  </div>
- </body>
+            head.ready("style.css", function() {
+               head.load("jquery-3.2.1.min.js"); 
+            });
+
+            head.ready("jquery-3.2.1.min.js", function() {
+               head.load("function.js"); 
+            });
+
+            head.ready("function.js", function() {
+               $(load);
+            });
+        </script>
+    </body>
 </html>
