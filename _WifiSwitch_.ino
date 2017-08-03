@@ -8,7 +8,7 @@
 #define sessionKeyLength 30
 #define numOfParameters 11
 #define numOfSwitches 4
-#define numOfFreeFiles 5
+#define numOfFreeFiles 6
 
 #define DEBUG
 
@@ -19,6 +19,7 @@ String freeToUse[numOfFreeFiles] = {
 	"/style.css",
 	"/jquery-3.2.1.min.js",
 	"/login.htm",
+	"/head.min.js",
 	"/SSDPName"
 };
 

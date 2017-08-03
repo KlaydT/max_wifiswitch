@@ -2,9 +2,6 @@
 <html lang="ru">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-type"/>
-    <link href="bootstrap.min.css" rel="stylesheet"/>
-    <link href="style.css" rel="stylesheet" type="text/css"/>
-    <script src="jquery-3.2.1.min.js" type="text/javascript"></script>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 	<title>
 		Login Page
@@ -52,13 +49,21 @@
 	</div>
 </div>
 </div>
+<script src="head.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-	$(function(){
-		$.ajax("SSDPName")
-        .done(function(data){
-            $('#SSDPName').text(data);
-        })
+	head.load("bootstrap.min.css", function() {
+    	head.load("style.css");
 	});
-</script>>
+
+	head.ready("style.css", function() {
+    	head.load("jquery-3.2.1.min.js", function() {
+    		$(function(){
+				$.ajax("SSDPName").done(function(data){
+            		$('#SSDPName').text(data);
+        		})
+			});
+    	})
+	});
+</script>
 </body>
 </html>
