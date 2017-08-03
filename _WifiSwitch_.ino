@@ -4,6 +4,7 @@
 #include <FS.h>             
 #include <ArduinoJson.h>  
 #include <WiFiClient.h>
+#include <DNSServer.h>
 
 #define sessionKeyLength 30
 #define numOfParameters 11
@@ -12,6 +13,9 @@
 
 #define DEBUG
 
+const byte DNS_PORT = 53;
+//IPAddress apIP(192, 168, 1, 1);
+DNSServer dnsServer;
 ESP8266WebServer HTTP(80); // Web интерфейс 
 
 String freeToUse[numOfFreeFiles] = {
@@ -38,7 +42,7 @@ String parametersName[numOfParameters] = {
 };
 
 String parametersValue[numOfParameters] = {
-	"v.24.",	            // версия скетча
+	"v.25.",	            // версия скетча
 	"Grand_24",				// Для хранения SSID
 	"",				        // Для хранения пароля сети
 	"SocketSetup",       	// SSID AP точки доступа
@@ -96,6 +100,7 @@ void setup() {
 }
 
 void loop() {
+  dnsServer.processNextRequest();
 	HTTP.handleClient();
 	delay(10);
 }
