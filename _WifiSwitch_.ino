@@ -11,7 +11,8 @@
 #define numOfSwitches 4
 #define numOfFreeFiles 6
 
-#define DEBUG
+// #define DEBUG
+
 
 const byte DNS_PORT = 53;
 //IPAddress apIP(192, 168, 1, 1);
@@ -100,7 +101,7 @@ void setup() {
 }
 
 void loop() {
-  dnsServer.processNextRequest();
+  	dnsServer.processNextRequest();
 	HTTP.handleClient();
 	delay(10);
 }
