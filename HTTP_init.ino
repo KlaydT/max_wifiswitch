@@ -1,5 +1,8 @@
 void HTTP_init(void) {
-  Serial.println("Start HTTP");
+  #if defined(DEBUG)
+    Serial.println("Start HTTP");
+  #endif
+
   HTTP.on("/configs.json", [](){
      mainHandler(handle_ConfigJSON); 
   });
@@ -17,10 +20,11 @@ void HTTP_init(void) {
   HTTP.onNotFound([](){
      mainHandler(anyHandler); 
   }); 
+
   const char * headerkeys[] = {"User-Agent","Cookie"};
   size_t headerkeyssize = sizeof(headerkeys)/sizeof(char*);
-  HTTP.collectHeaders(headerkeys, headerkeyssize);  //ask server to track these headers
-  HTTP.begin();                          // Запускаем HTTP сервер
+  HTTP.collectHeaders(headerkeys, headerkeyssize);     //ask server to track these headers
+  HTTP.begin();                                        // Запускаем HTTP сервер
 }
 
 
@@ -29,18 +33,30 @@ bool is_authentified(){
   if (ifFreeToUse(HTTP.uri())){
       return true;
   }
-
-  Serial.println("Check if user are authentified");
+  #if defined(DEBUG)
+    Serial.println("Check if user are authentified");
+  #endif
   if (HTTP.hasHeader("Cookie")){
-    Serial.print("Found cookie in browser: ");
+    #if defined(DEBUG)
+      Serial.print("Found cookie in browser: ");
+    #endif
     String cookie = HTTP.header("Cookie");
-    Serial.println(cookie);
+    #if defined(DEBUG)
+      Serial.println(cookie);
+    #endif
+    
     if (cookie.indexOf("HTTPSESSIONID=" + session_id) != -1) {  
-      Serial.println("Authentification Successful"); // Куки в браузере и куки на сервере совпали
+      #if defined(DEBUG)
+        Serial.println("Authentification Successful"); // Куки в браузере и куки на сервере совпали
+      #endif
+
       return true;
     }
   }
-  Serial.println("Authentification Failed"); // Куки не совпали
+  #if defined(DEBUG)
+    Serial.println("Authentification Failed"); // Куки не совпали
+  #endif
+
   return false;
 }
 
@@ -85,14 +101,22 @@ bool handleFileRead(String path) {
 void handleAuth(){
   String msg;
   if (HTTP.hasHeader("Cookie")){
-    Serial.print("Found cookie: ");
+    #if defined(DEBUG)
+      Serial.print("Found cookie: ");
+    #endif
     String cookie = HTTP.header("Cookie");
-    Serial.println(cookie);
+    #if defined(DEBUG)
+      Serial.println(cookie);
+    #endif
   }
   if (HTTP.hasArg("DISCONNECT")){
-    Serial.println("Disconnection");
+    #if defined(DEBUG)
+      Serial.println("Disconnection");
+    #endif
     session_id = SessionID_gen(sessionKeyLength);; // Вышли. Сервер сгенерил новую ID. Вдруг старую куку кто то услышал.
-    Serial.println("New Session_ID is: " + session_id);
+    #if defined(DEBUG)
+      Serial.println("New Session_ID is: " + session_id);
+    #endif
     redirectToLogin();
     return;
   }  
@@ -103,10 +127,14 @@ void handleAuth(){
       HTTP.sendHeader("Cache-Control","no-cache");
       HTTP.sendHeader("Set-Cookie","HTTPSESSIONID=" + session_id);
       HTTP.send(301);
-      Serial.println("Log in Successful");
+      #if defined(DEBUG)
+        Serial.println("Log in Successful");
+      #endif
       return;
     }
-  Serial.println("Log in Failed");
+  #if defined(DEBUG)  
+    Serial.println("Log in Failed");
+  #endif
   redirectToLogin();
   }
 }
@@ -119,7 +147,6 @@ void handle_Setup() {
   }
 
   saveConfig();
-  ///HTTP.send(200, "text/plain", "OK");  
   redirectToMain();
 }
 
@@ -148,7 +175,6 @@ void handle_Set_Switch() {
 
 // Перезагрузка модуля по запросу вида http://192.168.2.158/restart?device=ok
 void handle_Restart() {
-  //HTTP.send(200, "text/plain", "OK");
   redirectToLogin();
   ESP.restart();                                // перезагружаем модуль
 }

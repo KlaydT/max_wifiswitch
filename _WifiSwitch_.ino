@@ -11,7 +11,8 @@
 #define numOfSwitches 4
 #define numOfFreeFiles 6
 
-#define DEBUG
+// #define DEBUG
+
 
 const byte DNS_PORT = 53;
 //IPAddress apIP(192, 168, 1, 1);
@@ -55,7 +56,6 @@ String parametersValue[numOfParameters] = {
 	"WiFi Power Switch"		// Имя SSDP
 };
 
-int iaa = 0;
 String session_id = "";
 
 int switchesState[numOfSwitches] = {0,0,0,0};
@@ -100,7 +100,7 @@ void setup() {
 }
 
 void loop() {
-  dnsServer.processNextRequest();
+  //dnsServer.processNextRequest();
 	HTTP.handleClient();
-	delay(10);
+	delay(1);
 }

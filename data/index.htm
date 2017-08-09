@@ -3,6 +3,8 @@
     <head>
         <meta content="text/html; charset=utf-8" http-equiv="Content-type"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+        <link rel="stylesheet" href="bootstrap.min.css">
+        <link rel="stylesheet" href="style.css">
         <title>
             WiFi Switch
         </title>
@@ -30,23 +32,10 @@
                 </div>
             </div>
         </div>
-        <script src="head.min.js" type="text/javascript"></script>
+        <script src="jquery-3.2.1.min.js" type="text/javascript"></script>
+        <script src="function.js" type="text/javascript"></script>
         <script type="text/javascript">
-            head.load("bootstrap.min.css", function() {
-                head.load("style.css");
-            });
-
-            head.ready("style.css", function() {
-               head.load("jquery-3.2.1.min.js"); 
-            });
-
-            head.ready("jquery-3.2.1.min.js", function() {
-               head.load("function.js"); 
-            });
-
-            head.ready("function.js", function() {
-               $(load);
-            });
+           $(load);
         </script>
     </body>
 </html>
