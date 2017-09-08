@@ -7,7 +7,7 @@
 #include <DNSServer.h>
 
 #define sessionKeyLength 30
-#define numOfParameters 11
+#define numOfParameters 15
 #define numOfSwitches 4
 #define numOfFreeFiles 6
 
@@ -39,7 +39,11 @@ String parametersName[numOfParameters] = {
 	"IPaddr",
 	"IPmask",
 	"Gateway",
-	"SSDPName"
+	"SSDPName",
+  "SwitchName1",
+  "SwitchName2",
+  "SwitchName3",
+  "SwitchName4" 
 };
 
 String parametersValue[numOfParameters] = {
@@ -53,7 +57,11 @@ String parametersValue[numOfParameters] = {
 	"",
 	"",
 	"",
-	"WiFi Power Switch"		// Имя SSDP
+	"WiFi Power Switch",		// Имя SSDP
+  "НастЛампа",
+  "монитор",
+  "комп",
+  "Switch4"
 };
 
 String session_id = "";
@@ -100,7 +108,7 @@ void setup() {
 }
 
 void loop() {
-  //dnsServer.processNextRequest();
+  dnsServer.processNextRequest();
 	HTTP.handleClient();
 	delay(1);
 }

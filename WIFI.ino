@@ -51,7 +51,7 @@ void WIFIinit() {
     Serial.println(apIP);
     // if DNSServer is started with "*" for domain name, it will reply with
     // provided IP to all DNS request
-    //dnsServer.start(DNS_PORT, "*", apIP);
+    dnsServer.start(DNS_PORT, "*", apIP);
   } else { // удалось подключиться 
     digitalWrite(LED, LOW); // зажигаем светодиод. Он инверсный.
     Serial.println("Connected.");
